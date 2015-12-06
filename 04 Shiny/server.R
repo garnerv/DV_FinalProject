@@ -10,26 +10,28 @@ require(DT)
 
 shinyServer(function(input, output) {
   
-  dfct <- eventReactive(c(input$clicks1), 
-                        {dfct <- data.frame(fromJSON(getURL(URLencode('skipper.cs.utexas.edu:5001/rest/native/?query="select * from MEDICALDATA"'),httpheader=c(DB='jdbc:oracle:thin:@sayonara.microlab.cs.utexas.edu:1521:orcl', USER='C##cs329e_gv4353', PASS='orcl_gv4353', MODE='native_mode', MODEL='model', returnDimensions = 'False', returnFor = 'JSON'), verbose = TRUE) ))
-  })
+  dfct <- data.frame(fromJSON(getURL(URLencode('skipper.cs.utexas.edu:5001/rest/native/?query="select * from COLLEGESTATS"'),httpheader=c(DB='jdbc:oracle:thin:@sayonara.microlab.cs.utexas.edu:1521:orcl', USER='C##cs329e_gv4353', PASS='orcl_gv4353', MODE='native_mode', MODEL='model', returnDimensions = 'False', returnFor = 'JSON'), verbose = TRUE) ))
   KPI_Low_Max_value <- reactive({input$KPI1})     
   KPI_Medium_Max_value <- reactive({input$KPI2})
   
   
   output$distPlot1 <- renderPlot(height=600, width=800, {
     
-    crosstab <- dfct() %>% group_by(PROVIDERSTATE, DRGDEFINITION) %>% summarize(sum_payments = sum(AVERAGETOTALPAYMENTS), sum_charges = sum(AVERAGECOVEREDCHARGES)) %>% mutate(ratio = sum_payments / sum_charges ) %>% mutate(kpi = ifelse(ratio <= KPI_Low_Max_value(), '03 Low', ifelse(ratio <= KPI_Medium_Max_value(), '02 Medium', '01 High')))
+    dfct2 <- dfct %>% mutate(kpi = ifelse(GRADUATIONRATE <= KPI_Low_Max_value(), '03 Low', ifelse(GRADUATIONRATE <= KPI_Medium_Max_value(), '02 Medium', '01 High')))
+    
+    crosstab <- eventReactive(c(input$clicks1), 
+                {crosstab <- dfct2() %>% group_by(PUBLICPRIVATE, kpi) %>% summarize(avg_tuition = AVG(TUITIONFEES1314)) 
+                })
     
     
     plot <- ggplot() + 
       coord_cartesian() + 
       scale_x_discrete() +
       scale_y_discrete() +
-      labs(title='Medical Data Crosstab: By State in R') +
-      labs(x=paste("DRG Medical Disorder"), y=paste("Provider State")) +
+      labs(title='College Statitics Graduation Rank Percentile \n By Tuition') +
+      labs(x=paste("Public/Private"), y=paste("KPI")) +
       layer(data=crosstab, 
-            mapping=aes(x=DRGDEFINITION, y=PROVIDERSTATE, label=""), 
+            mapping=aes(x=PUBLICPRIVATE, y=kpi, label=""), 
             stat="identity", 
             stat_params=list(), 
             geom="text",
@@ -37,7 +39,7 @@ shinyServer(function(input, output) {
             position=position_identity()
       ) +
       layer(data=crosstab, 
-            mapping=aes(x=DRGDEFINITION, y=PROVIDERSTATE, label=""), 
+            mapping=aes(x=PUBLICPRIVATE, y=kpi, label=""), 
             stat="identity", 
             stat_params=list(), 
             geom="text",
@@ -45,19 +47,11 @@ shinyServer(function(input, output) {
             position=position_identity()
       ) +
       layer(data=crosstab, 
-            mapping=aes(x=DRGDEFINITION, y=PROVIDERSTATE, label=round(ratio, 2)), 
+            mapping=aes(x=PUBLICPRIVATE, y=kpi, label=avg_tuition), 
             stat="identity", 
             stat_params=list(), 
             geom="text",
             geom_params=list(colour="black"), 
-            position=position_identity()
-      ) +
-      layer(data=crosstab, 
-            mapping=aes(x=DRGDEFINITION, y=PROVIDERSTATE, fill=kpi), 
-            stat="identity", 
-            stat_params=list(), 
-            geom="tile",
-            geom_params=list(alpha=0.5), 
             position=position_identity()
       )
     plot
