@@ -21,7 +21,7 @@ shinyServer(function(input, output) {
   
   #output$distPlot1 <- renderPlot(height=600, width=800, {
   
-  crosstab <- dfct() %>%  mutate(kpi = ifelse(as.numeric(GRADUATIONRATE) <= KPI_Low_Max_value(), '03 Low', ifelse(as.numeric(GRADUATIONRATE) <= KPI_Medium_Max_value(), '02 Medium', '01 High'))) %>% group_by(PUBLICPRIVATE, kpi) %>% summarize(avg_tuition = mean(as.numeric(TUITIONFEES1314)))
+  crosstab <- dfct() %>%  mutate(reactive({kpi = ifelse(as.numeric(GRADUATIONRATE) <= KPI_Low_Max_value(), '03 Low', ifelse(as.numeric(GRADUATIONRATE) <= KPI_Medium_Max_value(), '02 Medium', '01 High')) }) )  %>% group_by(PUBLICPRIVATE, kpi()) %>% summarize(avg_tuition = mean(as.numeric(TUITIONFEES1314)))   
   
   
   output$distPlot1 <- renderPlot(height=600, width=800, {
@@ -29,10 +29,10 @@ shinyServer(function(input, output) {
     coord_cartesian() + 
     scale_x_discrete() +
     scale_y_discrete() +
-    labs(title='College Statitics Graduation Rank Percentile \n By Tuition') +
+    labs(title='College Statitics Graduation Rank Percentile \n By Average Tuition') +
     labs(x=paste("Public/Private"), y=paste("Graduation Rate Bucket")) +
     layer(data=crosstab(), 
-          mapping=aes(x=PUBLICPRIVATE, y=kpi, label=""), 
+          mapping=aes(x=PUBLICPRIVATE, y=kpi(), label=""), 
           stat="identity", 
           stat_params=list(), 
           geom="text",
@@ -40,7 +40,7 @@ shinyServer(function(input, output) {
           position=position_identity()
     ) +
     layer(data=crosstab(), 
-          mapping=aes(x=PUBLICPRIVATE, y=kpi, label=""), 
+          mapping=aes(x=PUBLICPRIVATE, y=kpi(), label=""), 
           stat="identity", 
           stat_params=list(), 
           geom="text",
@@ -48,7 +48,7 @@ shinyServer(function(input, output) {
           position=position_identity()
     ) +
     layer(data=crosstab(), 
-          mapping=aes(x=PUBLICPRIVATE, y=kpi, label=round(avg_tuition)), 
+          mapping=aes(x=PUBLICPRIVATE, y=kpi(), label=round(avg_tuition)), 
           stat="identity", 
           stat_params=list(), 
           geom="text",

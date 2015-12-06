@@ -1,0 +1,57 @@
+require("jsonlite")
+require("RCurl")
+require(ggplot2)
+require(dplyr)
+
+# Begin code for Second Tab, Bar Chart:
+
+
+  df <- data.frame(fromJSON(getURL(URLencode('skipper.cs.utexas.edu:5001/rest/native/?query="select * from COLLEGESTATS"'),httpheader=c(DB='jdbc:oracle:thin:@sayonara.microlab.cs.utexas.edu:1521:orcl', USER='C##cs329e_gv4353', PASS='orcl_gv4353', MODE='native_mode', MODEL='model', returnDimensions = 'False', returnFor = 'JSON'), verbose = TRUE) ))
+
+df4 <- df %>% mutate(avg_pell = mean(AVGAMTFIRSTTIMEUGPELL), avg_state = mean(AVGAMTFIRSTTIMEUGSTATEGRANT), avg_fed = mean(AVGAMTFIRSTTIMEUGOTHFED), avg_ins = mean(AVGAMTFIRSTTIMEUGINSGRANT)) %>% View()
+
+ggplot() + 
+    #coord_cartesian() + 
+    scale_x_discrete() +
+    #scale_x_continuous() +
+    scale_y_continuous() +
+    facet_wrap(~PUBLICPRIVATE, ncol=1) +
+    labs(title='Public vs Private \n Cost Comparison ') +
+    labs(x=paste("Money given from:"), y=paste("Dollar Value")) +
+    layer(data=df4, 
+          mapping=aes(x=paste("AVG PELL GRANTS"), y=avg_pell, label=round(avg_pell)), 
+          stat="identity", 
+          stat_params=list(), 
+          geom="bar",
+          geom_params=list(colour="red"), 
+          position=position_identity()
+    ) + coord_flip() +
+    layer(data=df4, 
+          mapping=aes(x=paste("AVG STATE GRANT"), y=avg_state, label=round(avg_state)), 
+          stat="identity", 
+          stat_params=list(), 
+          geom="bar",
+          geom_params=list(colour="blue"), 
+          position=position_identity()
+    ) +
+    layer(data=df4, 
+          mapping=aes(x=paste("AVG FEDERAL GRANT"), y=avg_fed, label=round(avg_fed)), 
+          stat="identity", 
+          stat_params=list(), 
+          geom="bar",
+          geom_params=list(colour="green"), 
+          position=position_identity()
+    ) +
+    layer(data=df4, 
+          mapping=aes(x=paste("AVG INSTITUTIONAL GRANT"), y=avg_ins, label=round(avg_ins)), 
+          stat="identity", 
+          stat_params=list(), 
+          geom="bar",
+          geom_params=list(colour="yellow"), 
+          position=position_identity()
+    ) +
+    layer(data=df, 
+            mapping=aes(yintercept = mean(TUITIONFEES1314)), 
+            geom="hline",
+            geom_params=list(colour="red")
+    )
