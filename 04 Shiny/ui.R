@@ -12,7 +12,8 @@ dashboardPage(
     sidebarMenu(
       menuItem("Crosstab", tabName = "crosstab", icon = icon("dashboard")),
       menuItem("Barchart", tabName = "barchart", icon = icon("th")),
-      menuItem("Scatter Plot", tabName = "scatterplot", icon = icon("th"))
+      menuItem("Scatter Plot", tabName = "scatterplot", icon = icon("th")),
+      menuItem("Join", tabName = "JoinedPlot", icon = icon("th"))
     )
   ),
   dashboardBody(
@@ -39,9 +40,14 @@ dashboardPage(
       # Third tab content
       tabItem(tabName = "scatterplot",
         actionButton(inputId = "clicks3",  label = "Click me"),
-        plotOutput("distPlot3")
+        plotOutput("distPlot3")),
+        
+        tabItem(tabName = "JoinedPlot",
+            actionButton(inputId = "clicks4",  label = "Click me"),
+            plotOutput("distPlot4")
       )
     )
   )
 )
+
   

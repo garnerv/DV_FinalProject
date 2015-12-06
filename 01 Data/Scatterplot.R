@@ -5,10 +5,15 @@ df <- data.frame(fromJSON(getURL(URLencode('skipper.cs.utexas.edu:5001/rest/nati
 summary(df)
 #head(df)
 
-#df2 <- df %>% mutate(AVG_DIFFERENCE = AVERAGETOTALPAYMENTS - AVERAGEMEDICAREPAYMENTS, AVG_DIFF = cume_dist(AVG_DIFFERENCE))
+df <- df %>% mutate(pell_percent = cume_dist(AVGAMTFIRSTTIMEUGPELL))
+levels <- c(0, .25, .5, .75, 1)
+labels <- c("4th Q Highest Pell Grant", "3rd Q Highest Pell Grant", "2nd Q Highest Pell Grant", "1st Q Highest Pell Grant")
+df <- df %>% filter(AVGAMTFIRSTTIMEUGPELL != "null") %>% mutate(x = cut(pell_percent, levels, labels = labels))
 
-df$GRADUATIONRATE -> 
-df$AVGAMTFIRSTTIMEUGPELL
+
+df %>% group_by(x, PUBLICPRIVATE) %>% summarise(mean_fac = mean(as.numeric(STUDENTFACULTYRATIO)), n=n(), mean_tuition = mean(as.numeric(TUITIONFEES1314))) %>% ggplot(aes(x=mean_fac, y=mean_tuition, color=x)) + geom_point(size=5) + facet_wrap(~PUBLICPRIVATE) + labs(title='Mean Average Faculty\n vs. Mean Tuition and Fees (Year 13-14)\n, Grouped by Quartile Ranking\n of Highest Average Pell Grants Students Receive') + labs(x="Average Student:Faculty Ratio", y=paste("Tuition and Fees for 2013-2014 Academic School Year ($)"))
+
+
 
 ggplot() + 
   coord_cartesian() + 
