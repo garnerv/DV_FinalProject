@@ -10,57 +10,56 @@ require(DT)
 
 shinyServer(function(input, output) {
   
-  dfct <- data.frame(fromJSON(getURL(URLencode('skipper.cs.utexas.edu:5001/rest/native/?query="select * from COLLEGESTATS"'),httpheader=c(DB='jdbc:oracle:thin:@sayonara.microlab.cs.utexas.edu:1521:orcl', USER='C##cs329e_gv4353', PASS='orcl_gv4353', MODE='native_mode', MODEL='model', returnDimensions = 'False', returnFor = 'JSON'), verbose = TRUE) ))
+  dfct <- eventReactive(c(input$clicks1), 
+                        {dfct <- data.frame(fromJSON(getURL(URLencode('skipper.cs.utexas.edu:5001/rest/native/?query="select * from COLLEGESTATS where TUITIONFEES1314 is not null"'),httpheader=c(DB='jdbc:oracle:thin:@sayonara.microlab.cs.utexas.edu:1521:orcl', USER='C##cs329e_gv4353', PASS='orcl_gv4353', MODE='native_mode', MODEL='model', returnDimensions = 'False', returnFor = 'JSON'), verbose = TRUE) ))
+                        })
   
   KPI_Low_Max_value <- reactive({input$KPI1})     
   KPI_Medium_Max_value <- reactive({input$KPI2})
   
   
   output$distPlot1 <- renderPlot(height=600, width=800, {
-    
-    dfct2 <- dfct %>% mutate(kpi = ifelse(GRADUATIONRATE <= KPI_Low_Max_value(), '03 Low', ifelse(GRADUATIONRATE <= KPI_Medium_Max_value(), '02 Medium', '01 High'))) #%>% View()
-    
-    crosstab <- eventReactive(c(input$clicks1), 
-                {crosstab <- dfct2 %>% group_by(PUBLICPRIVATE, kpi) %>% summarize(avg_tuition = mean(TUITIONFEES1314)) 
-                })
-    
-    output$distPlot1 <- renderPlot(height=600, width=800, {
-      plot <- ggplot() + 
-      coord_cartesian() + 
-      scale_x_discrete() +
-      scale_y_discrete() +
-      labs(title='College Statitics Graduation Rank Percentile \n By Tuition') +
-      labs(x=paste("Public/Private"), y=paste("KPI")) +
-      layer(data=crosstab(), 
-            mapping=aes(x=PUBLICPRIVATE, y=kpi, label=""), 
-            stat="identity", 
-            stat_params=list(), 
-            geom="text",
-            geom_params=list(colour="black"), 
-            position=position_identity()
-      ) +
-      layer(data=crosstab(), 
-            mapping=aes(x=PUBLICPRIVATE, y=kpi, label=""), 
-            stat="identity", 
-            stat_params=list(), 
-            geom="text",
-            geom_params=list(colour="black"), 
-            position=position_identity()
-      ) +
-      layer(data=crosstab(), 
-            mapping=aes(x=PUBLICPRIVATE, y=kpi, label=avg_tuition), 
-            stat="identity", 
-            stat_params=list(), 
-            geom="text",
-            geom_params=list(colour="black"), 
-            position=position_identity()
-      )
-    plot
-  }) 
+  
+  crosstab <- dfct() %>%  mutate(kpi = ifelse(as.numeric(GRADUATIONRATE) <= KPI_Low_Max_value(), '03 Low', ifelse(as.numeric(GRADUATIONRATE) <= KPI_Medium_Max_value(), '02 Medium', '01 High'))) %>% group_by(PUBLICPRIVATE, kpi) %>% summarize(avg_tuition = mean(as.numeric(TUITIONFEES1314))) #%>% View() 
+  
+  plot <- ggplot() + 
+    coord_cartesian() + 
+    scale_x_discrete() +
+    scale_y_discrete() +
+    labs(title='College Statitics Graduation Rank Percentile \n By Tuition') +
+    labs(x=paste("Public/Private"), y=paste("Graduation Rate Bucket")) +
+    layer(data=crosstab, 
+          mapping=aes(x=PUBLICPRIVATE, y=kpi, label=""), 
+          stat="identity", 
+          stat_params=list(), 
+          geom="text",
+          geom_params=list(colour="black"), 
+          position=position_identity()
+    ) +
+    layer(data=crosstab, 
+          mapping=aes(x=PUBLICPRIVATE, y=kpi, label=""), 
+          stat="identity", 
+          stat_params=list(), 
+          geom="text",
+          geom_params=list(colour="black"), 
+          position=position_identity()
+    ) +
+    layer(data=crosstab, 
+          mapping=aes(x=PUBLICPRIVATE, y=kpi, label=round(avg_tuition)), 
+          stat="identity", 
+          stat_params=list(), 
+          geom="text",
+          geom_params=list(colour="black"), 
+          position=position_identity()
+    )
+  plot
+  })
   
   observeEvent(input$clicks, {
     print(as.numeric(input$clicks))
   })
+  
+  
   # Begin code for Second Tab, Bar Chart:
   
   df <- eventReactive(input$clicks2, { 
@@ -146,4 +145,4 @@ shinyServer(function(input, output) {
     plot3 })
   
 }) 
-}) 
+
