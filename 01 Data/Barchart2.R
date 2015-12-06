@@ -6,7 +6,7 @@ require(dplyr)
 # Begin code for Second Tab, Bar Chart:
 
 
-  df <- data.frame(fromJSON(getURL(URLencode('skipper.cs.utexas.edu:5001/rest/native/?query="select * from COLLEGESTATS"'),httpheader=c(DB='jdbc:oracle:thin:@sayonara.microlab.cs.utexas.edu:1521:orcl', USER='C##cs329e_gv4353', PASS='orcl_gv4353', MODE='native_mode', MODEL='model', returnDimensions = 'False', returnFor = 'JSON'), verbose = TRUE) ))
+  df <- data.frame(fromJSON(getURL(URLencode('skipper.cs.utexas.edu:5001/rest/native/?query="select * from COLLEGESTATS where AVGAMTFIRSTTIMEUGINSGRANT is not null and AVGAMTFIRSTTIMEUGPELL is not null and AVGAMTFIRSTTIMEUGOTHFED is not null and AVGAMTFIRSTTIMEUGSTATEGRANT is not null and TUITIONFEES1314 is not null"'),httpheader=c(DB='jdbc:oracle:thin:@sayonara.microlab.cs.utexas.edu:1521:orcl', USER='C##cs329e_gv4353', PASS='orcl_gv4353', MODE='native_mode', MODEL='model', returnDimensions = 'False', returnFor = 'JSON'), verbose = TRUE) ))
 
   # df <- diamonds %>% group_by(color, clarity) %>% summarize(AVG_PRICE = mean(price)) %>% rename(COLOR=color, CLARITY=clarity)
   # df1 <- df %>% ungroup %>% group_by(CLARITY) %>% summarize(WINDOW_AVG_PRICE=mean(AVG_PRICE))
@@ -29,7 +29,7 @@ ggplot() +
     labs(title='Public vs Private \n Cost Comparison ') +
     labs(x=paste("Money given from:"), y=paste("Dollar Value")) +
     layer(data=df4, 
-          mapping=aes(x=paste("AVG PELL GRANTS"), y=average_pell, label=round(avg_pell)), 
+          mapping=aes(x=paste("AVG PELL GRANT"), y=average_pell, label=round(avg_pell)), 
           stat="identity", 
           stat_params=list(), 
           geom="bar",
@@ -60,7 +60,7 @@ ggplot() +
           geom_params=list(colour="yellow"), 
           position=position_identity()
     ) +
-    layer(data=df4, 
+  layer(data=df4, 
             mapping=aes(yintercept = average_tuition), 
             geom="hline",
             geom_params=list(colour="red")
