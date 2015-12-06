@@ -17,18 +17,21 @@ shinyServer(function(input, output) {
   KPI_Low_Max_value <- reactive({input$KPI1})     
   KPI_Medium_Max_value <- reactive({input$KPI2})
   
+  #KPI <- reactive({ifelse(as.numeric(GRADUATIONRATE) <= KPI_Low_Max_value(), '03 Low', ifelse(as.numeric(GRADUATIONRATE) <= KPI_Medium_Max_value(), '02 Medium', '01 High'))})
+  
+  #output$distPlot1 <- renderPlot(height=600, width=800, {
+  
+  crosstab <- dfct() %>%  mutate(kpi = ifelse(as.numeric(GRADUATIONRATE) <= KPI_Low_Max_value(), '03 Low', ifelse(as.numeric(GRADUATIONRATE) <= KPI_Medium_Max_value(), '02 Medium', '01 High'))) %>% group_by(PUBLICPRIVATE, kpi) %>% summarize(avg_tuition = mean(as.numeric(TUITIONFEES1314)))
+  
   
   output$distPlot1 <- renderPlot(height=600, width=800, {
-  
-  crosstab <- dfct() %>%  mutate(kpi = ifelse(as.numeric(GRADUATIONRATE) <= KPI_Low_Max_value(), '03 Low', ifelse(as.numeric(GRADUATIONRATE) <= KPI_Medium_Max_value(), '02 Medium', '01 High'))) %>% group_by(PUBLICPRIVATE, kpi) %>% summarize(avg_tuition = mean(as.numeric(TUITIONFEES1314))) #%>% View() 
-  
   plot <- ggplot() + 
     coord_cartesian() + 
     scale_x_discrete() +
     scale_y_discrete() +
     labs(title='College Statitics Graduation Rank Percentile \n By Tuition') +
     labs(x=paste("Public/Private"), y=paste("Graduation Rate Bucket")) +
-    layer(data=crosstab, 
+    layer(data=crosstab(), 
           mapping=aes(x=PUBLICPRIVATE, y=kpi, label=""), 
           stat="identity", 
           stat_params=list(), 
@@ -36,7 +39,7 @@ shinyServer(function(input, output) {
           geom_params=list(colour="black"), 
           position=position_identity()
     ) +
-    layer(data=crosstab, 
+    layer(data=crosstab(), 
           mapping=aes(x=PUBLICPRIVATE, y=kpi, label=""), 
           stat="identity", 
           stat_params=list(), 
@@ -44,7 +47,7 @@ shinyServer(function(input, output) {
           geom_params=list(colour="black"), 
           position=position_identity()
     ) +
-    layer(data=crosstab, 
+    layer(data=crosstab(), 
           mapping=aes(x=PUBLICPRIVATE, y=kpi, label=round(avg_tuition)), 
           stat="identity", 
           stat_params=list(), 
