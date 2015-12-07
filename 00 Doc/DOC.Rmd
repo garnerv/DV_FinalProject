@@ -64,3 +64,15 @@ Questions Raised by Data:
 The scatterplot was originally produced in tableau and replicated in R. See the following repository for that work: https://github.com/garnerv/DV_TProject1. In this project, the shiny package was used along side the appropriate R code in the 'server.R' and 'require.R' files in order to create the shiny reactive application. 
 
 First, a dataframe is created using a SQL call to the server to pull the medical data out of SQL developer. DFS2 is created as a reactive object so that when the button click button is clicked, the graph is created. The dfs2 object is called in the ggplot function because it contains the data.
+
+###Plot #4: Join
+This scatterplot compares the percentile of the average difference (average difference between average total payments and average medicare payments, so out of pocket payments) and total discharges.  There is an interesting set of lines visible from the plot.  They start nearly at the 0th percentile and run to about the 60th percentile.  I honestly don't understand what they could mean.  But the plot also shows an interesting drop just before the 70th percentile and from after that looks just scattered.
+
+Questions Raised by Data:
+1. What is with those lines?
+2. Why is there the drop off in the percentiles?
+
+###Reproducing the work:
+The scatterplot was originally produced in tableau and replicated in R. See the following repository for that work: https://github.com/garnerv/DV_TProject1. In this project, the shiny package was used along side the appropriate R code in the 'server.R' and 'require.R' files in order to create the shiny reactive application. 
+
+First, a dataframe is created using a SQL call to the server to pull the medical data out of SQL developer. DFS2 is created as a reactive object so that when the button click button is clicked, the graph is created. The dfs2 object is called in the ggplot function because it contains the data.
