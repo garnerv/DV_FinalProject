@@ -20,9 +20,9 @@ dashboardPage(
     tabItems(
       # First tab content
       tabItem(tabName = "crosstab",
-        sliderInput("KPI1", "KPI_Low_Max_value:", 
+        sliderInput("KPI1", "College Graduation Rate (as %) Low Max:", 
                     min = 1, max = 50,  value = 30),
-        sliderInput("KPI2", "KPI_Medium_Max_value:", 
+        sliderInput("KPI2", "College Graduation Rate (as %) Medium Max:", 
                     min = 50, max = 70,  value = 70),
         textInput(inputId = "title", 
                   label = "Crosstab Title",

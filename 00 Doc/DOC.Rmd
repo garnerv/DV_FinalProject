@@ -1,5 +1,5 @@
 ---
-title: "Project 6: Shiny Project"
+title: "Final Project"
 output:
   html_document:
     pandoc_args: [
@@ -7,19 +7,20 @@ output:
       "-RTS"
     ]
 ---
-For analysis we are using a database of medical data containing information on the cost of some common medical procedures. 
+For analysis we are using a database of college financial aid data from the 2013-2014 school year, made available through the US Department of Education College Affordability and Transparency Center. Additionally, some analysis will be done on the top ranked colleges in the U.S. in comparison with financial aid data. 
 
 ###Reproducing Our Work:
 1. Create a GitHub repository for the project.
 2. Create the folders for project.
-3. Find a csv file for statistical comparisons. Our CSV file was found on data.gov. Link: https://data.cms.gov/Medicare/Inpatient-Prospective-Payment-System-IPPS-Provider/97k6-zzx3
-4. Import CSV into SQL Developer.
+3. Find a csv file for statistical comparisons. Our CSV file was found on data.gov. Link: http://collegecost.ed.gov/catc/Default.aspx
+4. Clean up CSVs using ETL file.
+4. Import CSVs into SQL Developer.
 5. Visualize data in R using code included below.
 6. Package and publish app to shiny free application.
 
 ###Required Packages
 ```{r, echo=TRUE}
-source("../require.R",  echo = TRUE)
+source("../require.R")
 ```
 
 ###Plot #1: Crosstab w/ KPI
