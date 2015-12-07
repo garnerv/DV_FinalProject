@@ -13,7 +13,6 @@ shinyServer(function(input, output) {
   dfct <- eventReactive(c(input$clicks1), 
                         {dfct <- data.frame(fromJSON(getURL(URLencode('skipper.cs.utexas.edu:5001/rest/native/?query="select * from COLLEGESTATS where TUITIONFEES1314 is not null"'),httpheader=c(DB='jdbc:oracle:thin:@sayonara.microlab.cs.utexas.edu:1521:orcl', USER='C##cs329e_gv4353', PASS='orcl_gv4353', MODE='native_mode', MODEL='model', returnDimensions = 'False', returnFor = 'JSON'), verbose = TRUE) ))
                         })
-  
   KPI_Low_Max_value <- reactive({input$KPI1})     
   KPI_Medium_Max_value <- reactive({input$KPI2})
   
@@ -70,7 +69,7 @@ shinyServer(function(input, output) {
   
   df4 <- eventReactive(input$clicks2, {inner_join(dfbc2, dfbc3, by="PUBLICPRIVATE") })
   
-  output$distPlot2 <- renderPlot(height=600, width=800, {
+  output$distPlot2 <- renderPlot(height=550, width=800, {
     plot1 <- ggplot() + 
     #coord_cartesian() + 
     scale_x_discrete() +
@@ -131,7 +130,7 @@ shinyServer(function(input, output) {
   
   dfS2 <- eventReactive(input$clicks3, {dfS1})
   
-  output$distPlot3 <- renderPlot(height=600, width=600, {
+  output$distPlot3 <- renderPlot(height=550, width=600, {
     plot3 <- ggplot() + 
       coord_cartesian() + 
       scale_x_continuous() +
@@ -163,7 +162,7 @@ shinyServer(function(input, output) {
   
   dfJ4 <- eventReactive(input$clicks4, {dfJ3})
   
-  output$distPlot4 <- renderPlot(height=600, width=600, {
+  output$distPlot4 <- renderPlot(height=550, width=600, {
     p1 <- ggplot() + 
       coord_cartesian() + 
       scale_x_continuous() +

@@ -29,16 +29,16 @@ Questions Raised by Data:
 1. Why do Private not-for-profit and Public institutions have high graduation rates for their high tuition?
 2. Why do Private for-profit not have the same correllation?
 
+![](./Crosstab.jpg)
+
+
 ###Reproducing the work:
 The crosstab was originally produced in tableau and replicated in R. See the following repository for that work: https://github.com/garnerv/DV_FinalProject. In this project, the shiny package was used along side the appropriate R code in the 'server.R' and 'require.R' files in order to create the shiny reactive application. 
 
-The crosstab is first loaded into an object with the server call that pulls in the appropriate data frame in line 13 of 'server.r'. KPI low max and KPI medium max are then created as slider objects in line 16 and 17 of 'server.r'. In line 22, the output is rendered into output$distPlot1. Layers for various parts of the plot are applied using the ggplot2 package. 'Plot' in line 63 calls the plot. Line 66 is an observing function to count the number of clicks the user initiates.
+The crosstab is first loaded into an object with the server call that pulls in the appropriate data frame in line 13 of 'server.r'. KPI low max and KPI medium max are then created as slider objects in line 16 and 17 of 'server.r'. In line 19, the output is rendered into output$distPlot1. Layers for various parts of the plot are applied using the ggplot2 package. 'Plot' in line 54 calls the plot. Line 57 is an observing function to count the number of clicks the user initiates.
 
 Note about the plot:
-The KPI is initialized at the following values: The max low KPI is set at .2, while the max medium KPI is set at .4, and anything higher is coded as "high". You may adjust the values using the shiny sliders.
-See the application and this plot under 'crosstab' here:
-
-https://garnervincent.shinyapps.io/DV_SProject
+The KPI is initialized at the following values: The max low KPI is set at 30, while the max medium KPI is set at 70, and anything higher is coded as "high". You may adjust the values using the shiny sliders.
 
 
 ###Plot #2: Bar Chart with Reference Line
@@ -48,31 +48,40 @@ Questions Raised by Data:
 1. Why are Private not-for-profit schools providing the most money?
 2. Are public schools really the least out of pocket money?
 
+![](./Barchart.jpg)
+
+
 ###Reproducing the work:
 The barchart was originally produced in tableau and replicated in R. See the following repository for that work: https://github.com/garnerv/DV_FinalProject. In this project, the shiny package was used along side the appropriate R code in the 'server.R' and 'require.R' files in order to create the shiny reactive application. 
 
-First, the dataframe is created with a SQL call to the server to pull out the medical data. Piping using R code is then done to mutate the data and produce a more interesting plot. DF4 is created as an object using an inner join to the prior created data frames. Finally, GGplot is used with the render plot function to create the plot. The object is reactive so that when the button, 'Click me' is clicked as designated as click1 in the ui.r file.
+First, the dataframe is created with a SQL call to the server to pull out the collegiate data. Piping using R code is then done to mutate the data and produce a more interesting plot. DF4 is created as an object using an inner join to the prior created data frames. Finally, GGplot is used with the render plot function to create the plot. The object is reactive so that when the button, 'Click me' is clicked as designated as click1 in the ui.r file.
 
 ###Plot #3: ScatterPlot
-This scatterplot compares the percentile of the average difference (average difference between average total payments and average medicare payments, so out of pocket payments) and total discharges.  There is an interesting set of lines visible from the plot.  They start nearly at the 0th percentile and run to about the 60th percentile.  I honestly don't understand what they could mean.  But the plot also shows an interesting drop just before the 70th percentile and from after that looks just scattered.
+I don't know if I should talk about the plots you made in Tableau or the ones that are in shiny...
 
 Questions Raised by Data:
 1. What is with those lines?
-2. Why is there the drop off in the percentiles?
+2. Why are the public university values so close together?
+
+![](./ScatterPlot_forProfit.jpg)
+![](./ScatterPlot_notforProfit.jpg)
+![](./ScatterPlot_Public.jpg)
 
 ###Reproducing the work:
-The scatterplot was originally produced in tableau and replicated in R. See the following repository for that work: https://github.com/garnerv/DV_TProject1. In this project, the shiny package was used along side the appropriate R code in the 'server.R' and 'require.R' files in order to create the shiny reactive application. 
+The scatterplot was originally produced in tableau and replicated in R. See the following repository for that work: https://github.com/garnerv/DV_FinalProject. In this project, the shiny package was used along side the appropriate R code in the 'server.R' and 'require.R' files in order to create the shiny reactive application. 
 
-First, a dataframe is created using a SQL call to the server to pull the medical data out of SQL developer. DFS2 is created as a reactive object so that when the button click button is clicked, the graph is created. The dfs2 object is called in the ggplot function because it contains the data.
+First, a dataframe is created using a SQL call to the server to pull the collegiate data out of SQL developer. DFS2 is created as a reactive object so that when the button click button is clicked, the graph is created. The dfs2 object is called in the ggplot function because it contains the data.
 
 ###Plot #4: Join
-This scatterplot compares the percentile of the average difference (average difference between average total payments and average medicare payments, so out of pocket payments) and total discharges.  There is an interesting set of lines visible from the plot.  They start nearly at the 0th percentile and run to about the 60th percentile.  I honestly don't understand what they could mean.  But the plot also shows an interesting drop just before the 70th percentile and from after that looks just scattered.
+Here we joined with another data set that provided the top rankings of American Universities. With it we showed 4 different scatterplots to find correllation. There is a direct positive correlation to graduation rate and university ranking.  A negative correllation with respect to financial aid received by each student on average.  There is not much correllation for enrollment and ranking. Then there is positive correllation for Private not-for-profit tuition and ranking but not much for Public tuition. 
 
 Questions Raised by Data:
 1. What is with those lines?
 2. Why is there the drop off in the percentiles?
 
-###Reproducing the work:
-The scatterplot was originally produced in tableau and replicated in R. See the following repository for that work: https://github.com/garnerv/DV_TProject1. In this project, the shiny package was used along side the appropriate R code in the 'server.R' and 'require.R' files in order to create the shiny reactive application. 
+![](./Join.jpg)
 
-First, a dataframe is created using a SQL call to the server to pull the medical data out of SQL developer. DFS2 is created as a reactive object so that when the button click button is clicked, the graph is created. The dfs2 object is called in the ggplot function because it contains the data.
+###Reproducing the work:
+The scatterplot was originally produced in tableau and replicated in R. See the following repository for that work: https://github.com/garnerv/DV_FinalProject. In this project, the shiny package was used along side the appropriate R code in the 'server.R' and 'require.R' files in order to create the shiny reactive application. 
+
+First, a dataframe is created using a SQL call to the server to pull the collegiate data out of SQL developer. DFS2 is created as a reactive object so that when the button click button is clicked, the graph is created. The dfs2 object is called in the ggplot function because it contains the data.
